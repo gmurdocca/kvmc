@@ -40,6 +40,7 @@ int byte_counter = 0;
 char incoming_byte;
 char* packet;
 boolean sc_menu_state = false;
+boolean menu_button_pressed_last = false;
 
 void toggle_sc_menu_state(){
     if (sc_menu_state)
@@ -49,6 +50,10 @@ void toggle_sc_menu_state(){
 }
 
 void hide_sc_menu(){
+  if (menu_button_pressed_last){
+    toggle_sc_menu_state();
+    menu_button_pressed_last = false;
+  }
   if (sc_menu_state){
     digitalWrite(SC_MENU, LOW);
     delay(50);
@@ -172,6 +177,7 @@ void loop(){
       reinit();
     }
     else if (msg_type == SC){
+      menu_button_pressed_last = false;
       while(!Uart.available());
       incoming_byte = Uart.read();
       if (incoming_byte &  1)
@@ -185,6 +191,7 @@ void loop(){
       if (incoming_byte &  16){
         digitalWrite(SC_MENU, LOW);
         toggle_sc_menu_state();
+        menu_button_pressed_last = true;
       }
       if (incoming_byte &  32)
         digitalWrite(SC_ZOOM, LOW);

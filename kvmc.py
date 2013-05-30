@@ -1,23 +1,4 @@
 #!/usr/bin/env python
-############################################################################
-#
-# KVMC - A USB-to-KVM with extras
-# Copyright (C) 2013 George Murdocca
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#############################################################################
-
 LICENSE = """kvmc
 Copyright (c) 2012 George Murdocca
 
@@ -366,9 +347,8 @@ class Teensy_Connection():
         # longest of which is 6 bytes (ie. the _send_keyboard_state message). If this is
         # the case (possible if a replay was stopped mid-stream) then this may cause
         # extraneous outout on the remote machine such as extra key presses.
-        for i in range(7):
+        for i in range(6):
             self._send(chr(self.msg_type["reset"]))
-            time.sleep(.05)
         self._init_states()
 
     def press_sc_button(self, button):
@@ -507,7 +487,7 @@ class Teensy_Connection():
                 delay = struct.unpack('>f', delay)[0]
                 time.sleep(delay)
             else:
-                time.sleep(0.001)
+                time.sleep(0.1)
             self._send(byte)
         if self.stop_replay:
             self.send_reset()
@@ -695,7 +675,7 @@ class KVMC_GUI():
         about.set_copyright("Copyright (c) 2012 George Murdocca")
         about.set_comments("A USB-to-KVM application that provides direct KVM control of a headless computer using a kvmc device, including paste-as-keystrokes, serial communications and session recording.")
         about.set_license(LICENSE)
-        about.set_website("http://george.murdocca.com.au")
+        about.set_website("https://github.com/gmurdocca/kvmc")
         about.run()
         about.destroy()
 
@@ -703,7 +683,7 @@ class KVMC_GUI():
         wrap_checkbox_text = "Wrap Text"
         serial_checkbox_text = "Paste Windows Serial Driver"
         cb = gtk.Clipboard()
-        cb_text = cb.wait_for_text() or ""
+        cb_text = cb.wait_for_text()
         if type(args[0]) == type(gtk.CheckButton()):
             if args[0].get_label() == wrap_checkbox_text:
                 if args[0].get_active():
@@ -890,7 +870,7 @@ class KVMC_GUI():
             capture_device_input_entry.connect("activate", self.preferences, dialog, 1)
             capture_device_input_entry.set_text(self.teensy.capture_device_input)
             table.attach(capture_device_input_entry, 1, 2, 2, 3)
-            replay_speed_label = gtk.Label("Replay sessions at high speed:")
+            replay_speed_label = gtk.Label("Replay sessions at high speed (experimental):")
             replay_speed_label.set_alignment(1, .5)
             table.attach(replay_speed_label, 0, 1, 3, 4)
             replay_no_delay_checkbox = gtk.CheckButton(label=None)
@@ -1028,6 +1008,7 @@ class KVMC_GUI():
         event_attrs = dir(event)
         if not self.grabbed_window and not self.replay_thread.replay_file:
             if "button" in event_attrs and event.button == 1:
+                self.teensy.send_reset()
                 # lock mouse cursor to our window and hide it
                 gtk.gdk.pointer_grab(widget.window,
                                      owner_events=True,
