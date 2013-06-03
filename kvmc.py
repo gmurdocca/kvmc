@@ -347,7 +347,7 @@ class Teensy_Connection():
         # longest of which is 6 bytes (ie. the _send_keyboard_state message). If this is
         # the case (possible if a replay was stopped mid-stream) then this may cause
         # extraneous outout on the remote machine such as extra key presses.
-        for i in range(6):
+        for i in range(7):
             self._send(chr(self.msg_type["reset"]))
         self._init_states()
 
@@ -683,7 +683,7 @@ class KVMC_GUI():
         wrap_checkbox_text = "Wrap Text"
         serial_checkbox_text = "Paste Windows Serial Driver"
         cb = gtk.Clipboard()
-        cb_text = cb.wait_for_text()
+        cb_text = cb.wait_for_text() or ""
         if type(args[0]) == type(gtk.CheckButton()):
             if args[0].get_label() == wrap_checkbox_text:
                 if args[0].get_active():
