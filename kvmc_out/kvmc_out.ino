@@ -1,20 +1,20 @@
 /* kvmc_out
- * Copyright (c) 2012 George Murdocca
- * http://murdocca.com.au
- *
- * kvmc_out is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published
- * by the Free Software Foundation, either version 3 of the License,
- * or (at your option) any later version.
- *
- * kvmc_in is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You can obtain a copy of the GNU General Public License along at:
- * http://www.gnu.org/licenses/.
- */
+   Copyright (c) 2018 LinuxDojo Pty Ltd
+   http://linuxdojo.com.au
+
+   kvmc is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published
+   by the Free Software Foundation, either version 3 of the License,
+   or (at your option) any later version.
+
+   kvmc_in is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU General Public License for more details.
+
+   You can obtain a copy of the GNU General Public License along at:
+   http://www.gnu.org/licenses/.
+*/
 
 // Message Types
 #define KEYBOARD 0
@@ -42,26 +42,26 @@ char* packet;
 boolean sc_menu_state = false;
 boolean menu_button_pressed_last = false;
 
-void toggle_sc_menu_state(){
-    if (sc_menu_state)
-      sc_menu_state = false;
-    else
-      sc_menu_state = true;
+void toggle_sc_menu_state() {
+  if (sc_menu_state)
+    sc_menu_state = false;
+  else
+    sc_menu_state = true;
 }
 
-void hide_sc_menu(){
-  if (menu_button_pressed_last){
+void hide_sc_menu() {
+  if (menu_button_pressed_last) {
     toggle_sc_menu_state();
     menu_button_pressed_last = false;
   }
-  if (sc_menu_state){
+  if (sc_menu_state) {
     digitalWrite(SC_MENU, LOW);
     delay(50);
     toggle_sc_menu_state();
   }
 }
 
-void reinit(){
+void reinit() {
   Keyboard.set_key1(0);
   Keyboard.set_key2(0);
   Keyboard.set_key3(0);
@@ -75,29 +75,29 @@ void reinit(){
   hide_sc_menu();
 }
 
-int get_msg_type(char msg_byte){
+int get_msg_type(char msg_byte) {
   //return(msg_byte >> 5);
-  return(msg_byte & 7);
+  return (msg_byte & 7);
 }
 
-int get_msg_payload(char msg_byte){
+int get_msg_payload(char msg_byte) {
   // returns first 5 bits of byte
-  return(msg_byte >> 3);
+  return (msg_byte >> 3);
 }
 
-void setup(){
-    Uart.begin(115200);
-    Serial.begin(9600);
-    pinMode(LED_PIN, OUTPUT);
-    pinMode(SC_UP, OUTPUT);
-    pinMode(SC_DOWN, OUTPUT);
-    pinMode(SC_LEFT, OUTPUT);
-    pinMode(SC_RIGHT, OUTPUT);
-    pinMode(SC_MENU, OUTPUT);
-    pinMode(SC_ZOOM, OUTPUT);
+void setup() {
+  Uart.begin(115200);
+  Serial.begin(9600);
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(SC_UP, OUTPUT);
+  pinMode(SC_DOWN, OUTPUT);
+  pinMode(SC_LEFT, OUTPUT);
+  pinMode(SC_RIGHT, OUTPUT);
+  pinMode(SC_MENU, OUTPUT);
+  pinMode(SC_ZOOM, OUTPUT);
 }
 
-void loop(){
+void loop() {
   digitalWrite(LED_PIN, LOW);
   digitalWrite(SC_UP, HIGH);
   digitalWrite(SC_DOWN, HIGH);
@@ -105,20 +105,27 @@ void loop(){
   digitalWrite(SC_RIGHT, HIGH);
   digitalWrite(SC_MENU, HIGH);
   digitalWrite(SC_ZOOM, HIGH);
-  if (Serial.available()){
-    Uart.print(Serial.read(), BYTE);
+
+  // Incoming serial data from the system being controlled. Send to the upstream controlling Teensy.
+  if (Serial.available()) {
+    Uart.write(Serial.read());
   }
+
+  // Incoming message from controller teensy. Process and react accordingly.
   if (Uart.available()) {
     digitalWrite(LED_PIN, HIGH);
     incoming_byte = Uart.read();
+
+    // Split message into type and payload
     int msg_type = get_msg_type(incoming_byte);
     int msg_payload = get_msg_payload(incoming_byte);
-    if (msg_type == KEYBOARD){
-      while(true){
-        if (Uart.available()){
+    
+    if (msg_type == KEYBOARD) {
+      while (true) {
+        if (Uart.available()) {
           packet[byte_counter] = Uart.read();
           byte_counter++;
-          if (byte_counter == 6){
+          if (byte_counter == 6) {
             byte_counter = 0;
             Keyboard.set_key1(packet[0]);
             Keyboard.set_key2(packet[1]);
@@ -134,23 +141,26 @@ void loop(){
       }
       hide_sc_menu();
     }
-    else if (msg_type == KEYBOARD_MODKEY){
+    
+    else if (msg_type == KEYBOARD_MODKEY) {
       Keyboard.set_modifier(msg_payload);
       Keyboard.send_now();
       hide_sc_menu();
     }
-    else if (msg_type == MOUSE_BUTTON){
+    
+    else if (msg_type == MOUSE_BUTTON) {
       Mouse.set_buttons((msg_payload & 0x01) != 0,
                         (msg_payload & 0x02) != 0,
-                        (msg_payload & 0x04) != 0);      
+                        (msg_payload & 0x04) != 0);
       hide_sc_menu();
     }
-    else if (msg_type == MOUSE_MOVE){
-      while(true){
-        if (Uart.available()){
+    
+    else if (msg_type == MOUSE_MOVE) {
+      while (true) {
+        if (Uart.available()) {
           packet[byte_counter] = Uart.read();
           byte_counter++;
-          if (byte_counter == 2){
+          if (byte_counter == 2) {
             byte_counter = 0;
             Mouse.move(packet[0], packet[1]);
             packet = "";
@@ -160,25 +170,29 @@ void loop(){
       }
       hide_sc_menu();
     }
-    else if (msg_type == MOUSE_WHEEL){
-      if (msg_payload == 0){
+    
+    else if (msg_type == MOUSE_WHEEL) {
+      if (msg_payload == 0) {
         Mouse.scroll(1);
       }
-      else{
+      else {
         Mouse.scroll(-1);
       }
       hide_sc_menu();
     }
-    else if (msg_type == SERIAL_DATA){
-      while(!Uart.available());
-      Serial.print(Uart.read(), BYTE);
+    
+    else if (msg_type == SERIAL_DATA) {
+      // Loop until the UART is available
+      while (!Uart.available());
+      // Send the data to the serial port of the system being controlled
+      Serial.write(Uart.read());
     }
-    else if (msg_type == REINIT){
+    else if (msg_type == REINIT) {
       reinit();
     }
-    else if (msg_type == SC){
+    else if (msg_type == SC) {
       menu_button_pressed_last = false;
-      while(!Uart.available());
+      while (!Uart.available());
       incoming_byte = Uart.read();
       if (incoming_byte &  1)
         digitalWrite(SC_UP, LOW);
@@ -188,7 +202,7 @@ void loop(){
         digitalWrite(SC_LEFT, LOW);
       if (incoming_byte &  8)
         digitalWrite(SC_RIGHT, LOW);
-      if (incoming_byte &  16){
+      if (incoming_byte &  16) {
         digitalWrite(SC_MENU, LOW);
         toggle_sc_menu_state();
         menu_button_pressed_last = true;
@@ -199,4 +213,3 @@ void loop(){
     }
   }
 }
-
