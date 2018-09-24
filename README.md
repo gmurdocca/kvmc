@@ -2,23 +2,41 @@
 KVMC 1.1
 ========
 
-Copyright (C) 2013 - George Murdocca
+Copyright (C) 2018 - LinuxDojo Pty Ltd
 https://github.com/gmurdocca/kvmc
 
-KVMC is a USB-to-KVM application and hardware device allowing a laptop to be
-used as a raw KVM for a headless server, independent of server OS, supporting
-keystroke/mouse event recording and replay, and null-modem style serial data
-transfer. Basically use your laptop's screen, keyboard and mouse as if directly
-plugged into the VGA and USB ports of an external machine, with some cool
-extra features :)
+KVMC is a hardware device that allows control of a second computer via a direct
+connection to its HDMI/VGA and USB port. It presents a virtual keyboard and mouse to
+the remote computer that echo's the controling computer's keystrokes and mouse activity.
+The remote computer's live display is visible on the controlling computer in a GUI app
+that behaves similarly to a virtual console interface to a virtual machine.
 
-See http://gmurdocca.livejournal.com/4211.html for hardware device
-implementation, photos and more information.
+KVMC also allows recording of keystrokes and mouse activity for later replay, and
+supports a null-modem style serial link for data transfer (files, etc) between the two
+systems.
+
+Hardware:
+=========
+
+TODO
+
+Building:
+=========
+
+Hardware:
+---------
+
+TODO
+
+Software:
+---------
+
+Todo
 
 To start KVMC:
 ==============
 
-1. Connect KVMC "laptop" port to a laptop or PC via USB and boot from USB
+1. Connect the KVMC Control port to a USB3.0 compliant port via USB and boot from USB
 2. Start the KVMC app from the desktop
 3. Connect server VGA port, then connect server USB port.
 
@@ -89,22 +107,6 @@ install a driver for serial comms to work. Now you can fire up Hyperterm or
 your favorite terminal emulator and you're away (give puttyZ for Windows a go,
 there's a copy in KVMC's Lubuntu at /home/lubuntu/KVMC/puttyz.zip).
 
-If you are recording during a serial session, only your outgoing serial packets
-will be saved and replayed.
+If you are recording during a serial session, only outgoing serial packets
+sent by the controlling computer will be saved and replayed.
 
-Display Control
----------------
-
-You can adjust some display settings to try to make the remote screen a tad
-clearer (it will never be very clear due to the VGA scanline converter chip
-inside the box) using the Display Control option of the Edit menu. If the
-image quality is still too unbearable, connect an external VGA monitor to the
-optional port on the side of the KVMC box.
-
-
-Enjoy!
-George Murdocca
-
-Any donations appreciated! To donate...
-  via Paypal, send to email address: george (at) murdocca.com.au
-  via Bitcoin, send to wallet address: 18w7kYPC3F6WM7839NuBNQsbzd8QsP1Agb
