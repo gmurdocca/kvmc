@@ -1,6 +1,6 @@
 /* kvmc_in
- * Copyright (c) 2012 George Murdocca
- * http//murdocca.com.au
+ * Copyright (c) 2018 LinuxDojo
+ * http//linuxdojo.com
  *
  * kvmc_in is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published
