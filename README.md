@@ -1,6 +1,4 @@
-========
-KVMC 1.1
-========
+# KVMC 2.0
 
 Copyright (C) 2018 - LinuxDojo Pty Ltd
 https://github.com/gmurdocca/kvmc
@@ -12,22 +10,22 @@ and mouse activity. The remote computer's live display is visible on the
 controlling computer in a GUI app that behaves similarly to a virtual console
 interface to a virtual machine.
 
-KVMC also allows recording of keystrokes and mouse activity for later replay,
-and supports a null-modem style serial link for data transfer (files, etc)
-between the two systems.
+## Features:
 
-Building:
-=========
+- Direct (not network based) Keyboard/Video/Mouse control of any computer 
+- Recording of keystrokes and mouse activity for later replay
+- Paste typable text from clipboard as keystrokes on remote machine
+- Null-modem style serial link for data transfer (files, etc)
 
-Build Hardware:
----------------
+# Building:
+
+## Build Hardware:
 
 TODO
 
-Build and Deploy Software:
---------------------------
+## Build and Deploy Software:
 
-*Controll-side Teensy*
+### Controll-side Teensy
 
 This is to program the Teensy attached to the controlling computer. These steps
 assume you are building on Linux.
@@ -47,7 +45,7 @@ make
 make program
 ```
 
-*Remote-side Teensy*
+### Remote-side Teensy
 
 This is to program the Teensy attached to the remote computer.
 
@@ -67,12 +65,16 @@ Compile and write to the Teensy:
 - Sketch -> Verify/Compile (follow prompts)
 
 
-*USB Storage Device*
+### USB Storage Device Software
 
 TODO
 
-To start KVMC:
-==============
+
+
+
+# USAGE
+
+## To start KVMC:
 
 1. Connect the KVMC Control port to a USB3.0 compliant port via USB and boot from USB
 2. Start the KVMC app from the desktop
@@ -86,45 +88,19 @@ partition on a separate Linux system and enter as root:
 
   e2fsck -y <mount_point>/casper-rw
 
-Troubleshooting
-===============
-
-- Keyboard/mouse events not working or behaving weirdly? Try reconnecting
-  the Server USB cable (can take a few tries).
-
-- App not starting or crashing? Try running it from the CLI to see any errors.
-  Start LXTermial and type:
-
-    sudo /home/lubuntu/KVMC/kvmc-1.1/kvmc.py"
-
-- Things are terrible? Disconnect everything and try reboot. If you have to do
-  this too often to get out of a pickle, remove the USB key from inside the
-  KVMC (3 screws) and boot from it. Once booted, attach the KVMC box and fire
-  up the KVMC app. You can then detach and re-attach the KVMC box without
-  rebooting Lubuntu, making sure to close and open the KVMC GUI app each time.
-
-- Cant close the KVMC App? Open a shell and type "sudo pkill -9 -f kvmc.py" to
-  kill it.
-
-USAGE
-=====
-
-Session recording and playback
-------------------------------
+## Session recording and playback
 
 Record to a file every keystroke and mouse event (and serial message, see
 below) that you perform when controlling the remote computer for later
 playback.  Select File -> Record/Replay Session Input. Good for repeating
 arduous, repetitive, manual user input tasks.
 
-Paste as keystrokes
--------------------
+## Paste as keystrokes
 
 Paste whatever typable text is in your clipboard as keystrokes on the remote
 machine.
 
-Transferring files between local and remote computers
------------------------------------------------------
+## Transferring files between local and remote computers
 
 The KVMC acts as a null-modem serial cable. Just fire up a terminal emulator on
 both machines to transfer files with a binary serial protocol like Zmodem. Use
@@ -148,3 +124,21 @@ there's a copy in KVMC's Lubuntu at /home/lubuntu/KVMC/puttyz.zip).
 If you are recording during a serial session, only outgoing serial packets
 sent by the controlling computer will be saved and replayed.
 
+## Troubleshooting
+
+- Keyboard/mouse events not working or behaving weirdly? Try reconnecting
+  the Server USB cable (can take a few tries).
+
+- App not starting or crashing? Try running it from the CLI to see any errors.
+  Start LXTermial and type:
+
+    sudo /home/lubuntu/KVMC/kvmc-1.1/kvmc.py"
+
+- Things are terrible? Disconnect everything and try reboot. If you have to do
+  this too often to get out of a pickle, remove the USB key from inside the
+  KVMC (3 screws) and boot from it. Once booted, attach the KVMC box and fire
+  up the KVMC app. You can then detach and re-attach the KVMC box without
+  rebooting Lubuntu, making sure to close and open the KVMC GUI app each time.
+
+- Cant close the KVMC App? Open a shell and type "sudo pkill -9 -f kvmc.py" to
+  kill it.

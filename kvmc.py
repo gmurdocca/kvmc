@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 LICENSE = """kvmc
-Copyright (c) 2012 George Murdocca
+Copyright (c) 2018 Linux Dojo Pty Ltd
 
 kvmc is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published
@@ -16,7 +16,7 @@ You can obtain a copy of the GNU General Public License at:
 http://www.gnu.org/licenses/.
 """
 
-VERSION = 1.1
+VERSION = 2.0
 
 import gtk
 import serial
