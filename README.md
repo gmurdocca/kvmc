@@ -6,32 +6,70 @@ Copyright (C) 2018 - LinuxDojo Pty Ltd
 https://github.com/gmurdocca/kvmc
 
 KVMC is a hardware device that allows control of a second computer via a direct
-connection to its HDMI/VGA and USB port. It presents a virtual keyboard and mouse to
-the remote computer that echo's the controling computer's keystrokes and mouse activity.
-The remote computer's live display is visible on the controlling computer in a GUI app
-that behaves similarly to a virtual console interface to a virtual machine.
+connection to its HDMI/VGA and USB port. It presents a virtual keyboard and
+mouse to the remote computer that echo's the controling computer's keystrokes
+and mouse activity. The remote computer's live display is visible on the
+controlling computer in a GUI app that behaves similarly to a virtual console
+interface to a virtual machine.
 
-KVMC also allows recording of keystrokes and mouse activity for later replay, and
-supports a null-modem style serial link for data transfer (files, etc) between the two
-systems.
-
-Hardware:
-=========
-
-TODO
+KVMC also allows recording of keystrokes and mouse activity for later replay,
+and supports a null-modem style serial link for data transfer (files, etc)
+between the two systems.
 
 Building:
 =========
 
-Hardware:
----------
+Build Hardware:
+---------------
 
 TODO
 
-Software:
----------
+Build and Deploy Software:
+--------------------------
 
-Todo
+*Controll-side Teensy*
+
+This is to program the Teensy attached to the controlling computer. These steps
+assume you are building on Linux.
+
+Ensure the following packages (or their equivalents) are installed:
+
+```
+avr-gcc
+avr-libc
+```
+
+Connect the Teensy to a USB port, then:
+
+```
+cd kvmc_in
+make
+make program
+```
+
+*Remote-side Teensy*
+
+This is to program the Teensy attached to the remote computer.
+
+Ensure the following software is installed:
+
+- Teensyduino (See here: https://www.pjrc.com/teensy/td_download.html - Follow
+  the steps listed)
+
+Open file kvmc_out/kvmc_out.ino in Arduino IDE. Select the following options in
+the IDE:
+
+- Tools -> Board: Teensy 2.0
+- Tools -> USB Type: Serial + Keyboard + Mouse + Joystck
+
+Compile and write to the Teensy:
+
+- Sketch -> Verify/Compile (follow prompts)
+
+
+*USB Storage Device*
+
+TODO
 
 To start KVMC:
 ==============
